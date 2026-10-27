@@ -1,0 +1,16 @@
+{
+  "name": "guerreira-maite",
+  "version": "1.0.0",
+  "private": true,
+  "description": "App infantil Guerreira Maitê: vestir, escolher, colorir e jogo da memória.",
+  "dependencies": {
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/app": "^7.0.0",
+    "@capacitor/core": "^7.0.0",
+    "@capacitor/status-bar": "^7.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^7.0.0"
+  }
+}

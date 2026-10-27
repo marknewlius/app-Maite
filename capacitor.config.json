@@ -1,0 +1,11 @@
+{
+  "appId": "com.marknewlius.guerreiramaite",
+  "appName": "Guerreira Maitê",
+  "webDir": "www",
+  "android": {
+    "backgroundColor": "#1c0838"
+  },
+  "plugins": {
+    "StatusBar": { "overlaysWebView": false, "backgroundColor": "#1c0838" }
+  }
+}

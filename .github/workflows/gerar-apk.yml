@@ -1,0 +1,72 @@
+name: Gerar APK
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Preparar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Preparar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Instalar dependências
+        run: npm install
+
+      - name: Criar projeto Android
+        run: npx cap add android
+
+      - name: Gerar ícone e tela de abertura
+        run: npx capacitor-assets generate --android --iconBackgroundColor '#2a0f4f' --splashBackgroundColor '#1c0838'
+
+      - name: Ajustar versão e orientação
+        run: |
+          sed -i "s/versionCode [0-9]*/versionCode ${{ github.run_number }}/" android/app/build.gradle
+          sed -i "s/versionName \"[^\"]*\"/versionName \"1.${{ github.run_number }}\"/" android/app/build.gradle
+          sed -i 's/android:name=".MainActivity"/android:name=".MainActivity" android:screenOrientation="fullUser"/' android/app/src/main/AndroidManifest.xml
+
+      - name: Copiar o app para o projeto Android
+        run: npx cap sync android
+
+      - name: Usar sempre a mesma assinatura (permite atualizar sem desinstalar)
+        run: |
+          mkdir -p ~/.android
+          cp keystore/debug.keystore ~/.android/debug.keystore
+
+      - name: Montar o APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+          cp app/build/outputs/apk/debug/app-debug.apk ../GuerreiraMaite.apk
+
+      - name: Guardar o APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: GuerreiraMaite-apk
+          path: GuerreiraMaite.apk
+
+      - name: Publicar para download
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: versao-${{ github.run_number }}
+          name: Guerreira Maitê - versão ${{ github.run_number }}
+          body: Baixe o arquivo GuerreiraMaite.apk abaixo e abra no celular Android para instalar.
+          files: GuerreiraMaite.apk
+          make_latest: true
