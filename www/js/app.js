@@ -178,20 +178,29 @@
     lastTs = 0; cancelAnimationFrame(rafId); rafId = requestAnimationFrame(loop);
   }
   function stopShow() { cancelAnimationFrame(rafId); spinAnim = null; confetti.length = 0; }
+  let spinning = false;
   function setAngle(a) {
-    const rad = a * Math.PI / 180, c = Math.cos(rad);
-    const sx = Math.max(0.16, Math.abs(c));
+    const rad = a * Math.PI / 180, c = Math.cos(rad), ac = Math.abs(c);
     const front = c >= 0;
     $('#faceFront').style.display = front ? '' : 'none';
     $('#faceBack').style.display = front ? 'none' : '';
     $('#faceBack').style.transform = 'none';
-    const skew = Math.sin(rad) * 6;
-    $('#spinner').style.transform = `scaleX(${sx.toFixed(3)}) skewY(${skew.toFixed(2)}deg)`;
-    $('#spinner').style.filter = `brightness(${(0.75 + 0.25 * Math.abs(c)).toFixed(2)})`;
+    // nunca fica fininha: no máximo estreita um pouco, e a troca acontece dentro do brilho
+    const sx = 0.72 + 0.28 * ac;
+    const edge = Math.max(0, 1 - ac / 0.45);            // 1 no momento da virada
+    const lean = Math.sin(rad) * 3;
+    $('#spinner').style.transform = `scaleX(${sx.toFixed(3)}) rotate(${lean.toFixed(2)}deg)`;
+    $('#spinner').style.filter = edge > 0 ? `brightness(${(1 + edge * 1.6).toFixed(2)}) blur(${(edge * 2.5).toFixed(1)}px)` : 'none';
+    $('#flash').style.opacity = (edge * 0.95).toFixed(2);
+    $('#flash').style.transform = `scale(${(0.7 + edge * 0.5).toFixed(2)})`;
+    const swirlOn = spinning || dragging || Math.abs(vel) > 40 ? 1 : 0;
+    const sw = $('#swirl');
+    sw.style.opacity = Math.max(edge, swirlOn * 0.85).toFixed(2);
   }
   function spin(turns, secs, done) {
     const from = angle, to = angle + 360 * turns, t0 = performance.now();
-    spinAnim = { from, to, t0, dur: secs * 1000, done };
+    spinning = true;
+    spinAnim = { from, to, t0, dur: secs * 1000, done: () => { spinning = false; done && done(); } };
   }
   function loop(ts) {
     const dt = lastTs ? Math.min(0.05, (ts - lastTs) / 1000) : 0; lastTs = ts;
@@ -209,7 +218,7 @@
     rafId = requestAnimationFrame(loop);
   }
   const stageEl = $('#showStage');
-  stageEl.addEventListener('pointerdown', e => { dragging = true; lastX = e.clientX; vel = 0; spinAnim = null; stageEl.setPointerCapture(e.pointerId); });
+  stageEl.addEventListener('pointerdown', e => { dragging = true; lastX = e.clientX; vel = 0; spinAnim = null; spinning = false; stageEl.setPointerCapture(e.pointerId); });
   stageEl.addEventListener('pointermove', e => { if (!dragging) return; const dx = e.clientX - lastX; lastX = e.clientX; angle += dx * 0.9; vel = dx * 0.9 * 60; });
   const endDrag = () => { if (!dragging) return; dragging = false; idleT = 0; };
   stageEl.addEventListener('pointerup', endDrag); stageEl.addEventListener('pointercancel', endDrag);
