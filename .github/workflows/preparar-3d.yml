@@ -1,0 +1,40 @@
+name: Preparar bibliotecas 3D
+
+on:
+  workflow_dispatch:
+  push:
+    paths: ['.github/workflows/preparar-3d.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  libs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Baixar three.js e three-vrm
+        run: |
+          mkdir -p /tmp/l && cd /tmp/l && npm init -y >/dev/null
+          npm install three@0.170.0 @pixiv/three-vrm@3
+          ls node_modules/@pixiv/three-vrm/lib
+      - name: Copiar para o app
+        run: |
+          mkdir -p www/lib/addons
+          cp /tmp/l/node_modules/three/build/three.module.min.js www/lib/three.module.js
+          cp /tmp/l/node_modules/three/examples/jsm/loaders/GLTFLoader.js www/lib/addons/GLTFLoader.js
+          cp /tmp/l/node_modules/three/examples/jsm/utils/BufferGeometryUtils.js www/lib/addons/BufferGeometryUtils.js
+          cp /tmp/l/node_modules/@pixiv/three-vrm/lib/three-vrm.module.min.js www/lib/three-vrm.module.js
+          cp /tmp/l/node_modules/three/LICENSE www/lib/LICENSE-three.txt
+          cp /tmp/l/node_modules/@pixiv/three-vrm/LICENSE www/lib/LICENSE-three-vrm.txt || true
+          ls -la www/lib www/lib/addons
+      - name: Salvar no repositório
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add www/lib
+          git commit -m "Bibliotecas 3D (three.js e three-vrm)" || echo "nada novo"
+          git push
