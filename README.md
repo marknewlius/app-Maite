@@ -16,3 +16,8 @@ Músicas e efeitos são originais e gerados pelo próprio app. Funciona sem inte
 Cada vez que o código é atualizado aqui, o GitHub monta o app sozinho
 (aba **Actions**). Quando terminar, o arquivo `GuerreiraMaite.apk` aparece
 na área **Releases**, no lado direito da página do repositório.
+
+## Créditos dos modelos 3D
+
+As 4 bonecas 3D são modelos de exemplo do VRoid Studio (pixiv), publicados
+em domínio público (licença CC0). Bibliotecas: three.js e three-vrm (licença MIT).

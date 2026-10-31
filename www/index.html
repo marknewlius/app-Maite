@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#1c0838">
   <title>Guerreira Maitê</title>
   <link rel="stylesheet" href="css/app.css">
+  <script type="importmap">{"imports":{"three":"./lib/three.module.js","three/addons/":"./lib/addons/","@pixiv/three-vrm":"./lib/three-vrm.module.js"}}</script>
 </head>
 <body>
   <!-- padrões de brilho usados no colorir -->
@@ -32,7 +33,7 @@
       <div class="beams"></div>
       <button class="corner right" id="btnMusic" aria-label="Música">🎵</button>
       <div class="home-wrap">
-        <div class="home-doll" id="homeDoll"></div>
+        <div class="home-doll3d" id="homeDoll"></div>
         <div class="home-side">
           <h1 class="logo"><span>Guerreira</span><b>Maitê</b></h1>
           <div class="menu">
@@ -55,7 +56,7 @@
         <button class="round big ok" id="btnReady" aria-label="Pronto">✨</button>
       </div>
       <div class="dress-body">
-        <div class="stage" id="dressStage"><div class="spot"></div><div class="floor"></div><div class="doll-holder" id="dressDoll"></div></div>
+        <div class="stage3d" id="dressStage"></div>
         <div class="panel">
           <div class="tabs" id="tabs"></div>
           <div class="options" id="options"></div>
@@ -87,23 +88,11 @@
         <button class="round" id="btnSpin" aria-label="Girar">🔄</button>
         <button class="round ok" id="btnSaveLook" aria-label="Guardar">💾</button>
       </div>
-      <div class="show-stage" id="showStage">
-        <div class="spot big"></div>
-        <div class="floor big"></div>
-        <div class="turntable" id="turn">
-          <div class="spinner" id="spinner">
-            <div class="face front" id="faceFront"></div>
-            <div class="face back" id="faceBack"></div>
-          </div>
-          <div class="flash" id="flash"></div>
-          <svg class="swirl" id="swirl" viewBox="0 0 400 800" aria-hidden="true">
-            <defs><linearGradient id="swg" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff6b0"/><stop offset="1" stop-color="#ff7ad9" stop-opacity="0"/></linearGradient></defs>
-            <g class="ring r1"><ellipse cx="200" cy="660" rx="170" ry="40" fill="none" stroke="url(#swg)" stroke-width="10" stroke-dasharray="220 120"/></g>
-            <g class="ring r2"><ellipse cx="200" cy="470" rx="190" ry="44" fill="none" stroke="url(#swg)" stroke-width="12" stroke-dasharray="260 140"/></g>
-            <g class="ring r3"><ellipse cx="200" cy="280" rx="175" ry="40" fill="none" stroke="url(#swg)" stroke-width="10" stroke-dasharray="200 160"/></g>
-            <g class="sparks"><text x="40" y="250">✦</text><text x="330" y="380">✦</text><text x="70" y="520">★</text><text x="320" y="610">✦</text><text x="190" y="130">★</text><text x="350" y="200">✧</text><text x="30" y="420">✧</text></g>
-          </svg>
-        </div>
+      <div class="show-stage" id="showStage"></div>
+      <div class="show-actions">
+        <button class="act" id="btnDance">💃</button>
+        <button class="act" id="btnWave">👋</button>
+        <button class="act" id="btnPose">🌟</button>
       </div>
       <div class="hint">👆 arraste para girar</div>
     </section>
@@ -149,10 +138,11 @@
   </div>
 
   <div id="toast"></div>
+  <div id="loading"><div>✨</div></div>
 
   <script src="js/doll2d.js"></script>
   <script src="js/pages.js"></script>
   <script src="js/audio.js"></script>
-  <script src="js/app.js"></script>
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>
